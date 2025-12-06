@@ -20,7 +20,7 @@ Aplikasi mobile *Full-Stack* untuk manajemen inventaris "Primamart". Aplikasi in
 Berikut adalah dokumentasi video yang menunjukkan alur registrasi, login, dan operasi CRUD buku:
 
 
-**[https://drive.google.com/file/d/1AoW5NjAudASNgPB72RYAApu57IiiD-DX/view?usp=sharing]**
+**[https://drive.google.com/file/d/1RXtKX9JLpPH6jHPMcz02jqHhHxBUPxD7/view?usp=sharing]**
 
 
 ## 🔌 Spesifikasi API (Laravel Backend)

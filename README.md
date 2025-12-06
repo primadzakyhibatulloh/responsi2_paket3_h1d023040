@@ -55,6 +55,12 @@ Berikut adalah penjelasan fungsi utama dari setiap file dalam aplikasi ini:
 
 ### 3. Tampilan Layar (`lib/screens/`)
 * **`login_page.dart`**: Halaman awal aplikasi dengan form login.
+Kode,Penjelasan Fungsi
+class LoginPage extends StatefulWidget,Merupakan widget yang memerlukan perubahan status (seperti loading dan input teks) sehingga menggunakan StatefulWidget.
+final _emailController = ...,TextEditingController untuk mengambil nilai yang diketik pengguna pada kolom Email.
+final _passwordController = ...,TextEditingController untuk mengambil nilai yang diketik pengguna pada kolom Password.
+final ApiService _apiService = ApiService();,Membuat instance dari kelas <code>ApiService</code> untuk melakukan komunikasi HTTP (panggilan API).
+bool _isLoading = false;,Variabel state yang mengontrol apakah tombol login harus menampilkan indikator loading (true) atau teks tombol (false).
 * **`register_page.dart`**: Form pendaftaran user baru. Menggunakan <code>try-catch-finally</code> dan menampilkan Popup Dialog sukses setelah registrasi.
 * **`home_page.dart`**: Halaman utama ("Inventaris Buku Primamart"). Menampilkan daftar buku, tombol logout, dan fungsi untuk hapus/edit.
 * **`form_book_page.dart`**: Form serbaguna untuk Tambah atau Edit buku.

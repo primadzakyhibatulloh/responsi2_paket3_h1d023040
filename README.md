@@ -8,22 +8,20 @@ Aplikasi mobile *Full-Stack* untuk manajemen inventaris "Primamart". Aplikasi in
 
 | Atribut | Detail Informasi |
 | :--- | :--- |
-| **Nama Lengkap** | [ISI NAMA LENGKAP KAMU DISINI] |
+| **Nama Lengkap** | Prima Dzaky Hibatulloh |
 | **NIM** | H1D023040 |
-| **Shift Baru** | [ISI SHIFT BARU, Contoh: E] |
-| **Shift Asal** | [ISI SHIFT ASAL, Contoh: A] |
-| **Tanggal** | Desember 2025 |
+| **Shift Baru** | F |
+| **Shift Asal** | B |
+| **Tanggal** | 6 Desember 2025 |
 
 ---
 
 ## 🎥 Demo Aplikasi
 Berikut adalah dokumentasi video yang menunjukkan alur registrasi, login, dan operasi CRUD buku:
 
-**[KLIK DISINI UNTUK MELIHAT VIDEO DEMO]**
 
-*(Catatan: Pastikan video diunggah ke platform yang dapat diakses publik)*
+**[https://drive.google.com/file/d/1AoW5NjAudASNgPB72RYAApu57IiiD-DX/view?usp=sharing]**
 
----
 
 ## 🔌 Spesifikasi API (Laravel Backend)
 Backend menggunakan Laravel Sanctum. Semua request ke endpoint inventaris **wajib** menyertakan Header: `Authorization: Bearer <your_access_token>`

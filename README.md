@@ -1,6 +1,6 @@
 # Responsi 2 Mobile Paket 3 - Inventaris Primamart
 
-Aplikasi mobile *Full-Stack* untuk manajemen inventaris "Primamart". Aplikasi ini dikembangkan menggunakan **Flutter** (Frontend) dan **Laravel** (Backend) dengan arsitektur REST API dan autentikasi token (Sanctum).
+Aplikasi mobile *Full-Stack* untuk manajemen inventaris "Primamart". Aplikasi ini dikembangkan menggunakan **Flutter** (Frontend) dan **Laravel** (Backend) dengan arsitektur REST API yang aman dan skalabel menggunakan autentikasi token (Sanctum).
 
 ---
 
@@ -45,66 +45,119 @@ Backend menggunakan Laravel Sanctum. Semua request ke endpoint inventaris **waji
 
 ---
 
-## 💻 Bedah Kode & Analisis Teknis (Deep Dive)
+## 💻 Bedah Kode & Analisis Teknis (Deep Dive Analysis)
 
-### 1. Halaman Login (`lib/screens/login_page.dart`)
-Berfungsi sebagai gerbang autentikasi utama.
+Berikut adalah analisis mendalam mengenai logika teknis, alur data, dan implementasi kode untuk setiap komponen utama aplikasi.
 
-| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
+### 1. Konfigurasi Dependensi (`pubspec.yaml`)
+Manifestasi pustaka eksternal yang digunakan.
+
+| Paket | Versi | Analisis Teknis |
 | :--- | :--- | :--- |
-| **`TextEditingController`** | **Input Listener** | Objek ini "mendengarkan" input keyboard pada `TextField` secara real-time tanpa perlu me-render ulang seluruh widget. Memungkinkan pengambilan nilai (`.text`) saat tombol ditekan. |
-| **`bool _isLoading`** | **State Management** | Mencegah **Race Condition**. Saat bernilai `true`, tombol berubah menjadi *spinner* dan interaksi dikunci. Ini mencegah user menekan tombol berkali-kali saat request sedang berjalan. |
-| **`_login()` Method** | **Async Logic** | Fungsi berjalan secara *asynchronous* (`async/await`). UI ditahan di fase loading sampai server memberikan respons, mencegah aplikasi *freeze* (ANR). |
-| **`pushReplacement`** | **Stack Security** | Mengganti halaman Login dengan Home Page secara destruktif. Halaman Login dihapus dari memori (*stack*), sehingga tombol *Back* di Android akan menutup aplikasi, bukan kembali ke login (Keamanan Sesi). |
-
-### 2. Halaman Registrasi (`lib/screens/register_page.dart`)
-Menangani pendaftaran user dengan validasi ketat.
-
-| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
-| :--- | :--- | :--- |
-| **Validasi Client-Side** | **Efficiency** | Pengecekan `if (isEmpty)` dilakukan sebelum request dikirim. Ini menghemat *bandwidth* dan beban server dengan menolak data kosong di sisi aplikasi. |
-| **`try-catch-finally`** | **Robustness** | Struktur *fail-safe* utama. <br>• **Try**: Menjalankan request berisiko.<br>• **Catch**: Menangkap error (Server 500, Timeout).<br>• **Finally**: Menjamin `_isLoading = false` tereksekusi apa pun yang terjadi, mencegah *infinite spinner*. |
-| **Callback Dialog** | **Event Driven** | `showSuccessDialog` menggunakan parameter *callback*. Navigasi `Navigator.pop` hanya dieksekusi **SETELAH** user menekan tombol "OK" pada popup, memastikan pesan sukses terbaca. |
-| **Custom Exception** | **Flow Control** | Menggunakan `throw Exception` manual jika API mengembalikan `false` (misal email duplikat) agar alur program melompat ke blok `catch` untuk penanganan error yang seragam. |
-
-### 3. Halaman Utama (`lib/screens/home_page.dart`)
-Dashboard untuk melihat (Read) dan menghapus (Delete) data.
-
-| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
-| :--- | :--- | :--- |
-| **`FutureBuilder`** | **Async UI** | Widget ini mengotomatisasi manajemen status UI (`waiting`, `hasData`, `hasError`). Menghilangkan kebutuhan penulisan logika *if-else* manual yang rumit untuk status loading data. |
-| **`ListView.builder`** | **Memory Opt.** | Menggunakan teknik **Virtualisasi/Lazy Loading**. Hanya merender widget buku yang terlihat di layar. Widget yang di-scroll keluar akan dihancurkan untuk menghemat RAM. |
-| **`_refreshBooks()`** | **State Hydration** | Fungsi ini melakukan *re-fetching*. Dengan memanggil `setState` pada variabel `Future`, kita memaksa `FutureBuilder` untuk me-reset state dan mengambil data terbaru dari server (Real-time update). |
-| **`showDialog` (Await)** | **Blocking UI** | Pada tombol Hapus, `await showDialog` digunakan untuk memblokir eksekusi kode sampai user memilih "Ya" atau "Tidak". Mencegah penghapusan data yang tidak disengaja. |
-
-### 4. Halaman Form Buku (`lib/screens/form_book_page.dart`)
-Satu halaman yang menangani dua fungsi: **Create** dan **Update** (Polimorfisme UI).
-
-| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
-| :--- | :--- | :--- |
-| **`initState`** | **Lifecycle Hook** | Logika pengisian data lama (`_controller.text = ...`) diletakkan di sini agar hanya dijalankan sekali saat widget dibuat, bukan setiap kali widget di-*rebuild*. |
-| **`int.tryParse`** | **Defensive Prog.** | Input `TextField` adalah String, API butuh Integer. `tryParse` mencoba mengonversi; jika gagal (user input huruf), ia mengembalikan `null`. Operator `?? 0` menangani `null` tersebut menjadi angka 0, mencegah aplikasi *crash*. |
-| **Dual Logic** | **Code Reusability** | Logika `if (widget.book == null)` menentukan mode operasi. Jika `null` -> Panggil API **POST** (Add). Jika ada data -> Panggil API **PUT** (Update). Ini mengurangi duplikasi kode secara signifikan. |
-| **Success Feedback** | **UX Flow** | Setelah operasi API sukses, aplikasi memanggil `showSuccessDialog`. Setelah user menutup dialog, `Navigator.pop` dipanggil untuk kembali ke Home dan memicu refresh data otomatis. |
-
-### 5. Layanan API (`lib/data/api_service.dart`)
-Kelas *Singleton-like* yang mengisolasi komunikasi jaringan.
-
-| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
-| :--- | :--- | :--- |
-| **Header Injection** | **Security** | Setiap request (`GET`, `POST`, `PUT`, `DELETE`) otomatis disisipi header `Authorization: Bearer [token]`. Token diambil dari penyimpanan lokal aman (`SharedPreferences`). |
-| **MIME Type** | **Protocol** | Header `Accept: application/json` dipasang agar Laravel tidak mengembalikan halaman HTML "Whoops" saat terjadi error server, melainkan JSON error yang bisa diparsing aplikasi. |
-| **Status Handling** | **Normalization** | Menggunakan logika `if (status == 200 || status == 201)`. Ini menormalisasi respons sukses, karena standar HTTP mengembalikan 201 untuk *Resource Created*, yang sering dianggap "gagal" jika kode hanya mengecek 200. |
+| **`http`** | `^1.2.0` | Library standar untuk melakukan permintaan HTTP asinkron (`GET`, `POST`, `PUT`, `DELETE`). Lebih ringan daripada Dio untuk kebutuhan REST sederhana. |
+| **`shared_preferences`** | `^2.2.2` | Penyimpanan Key-Value persisten di perangkat. Digunakan untuk menyimpan **Bearer Token** sesi login agar user tetap login meskipun aplikasi ditutup (*Session Persistence*). |
 
 ---
 
-## 🛠️ Panduan Instalasi
+### 2. Layanan API (`lib/data/api_service.dart`)
+Kelas *Singleton-like* yang bertindak sebagai **Facade** (Wajah) komunikasi jaringan.
 
-### Tahap 1: Konfigurasi Backend (Laravel)
-1.  **Database Migration**: `php artisan migrate` (Membuat tabel database, termasuk `personal_access_tokens`).
-2.  **Running Server**: `php artisan serve` (Server berjalan di `http://127.0.0.1:8000`).
+| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
+| :--- | :--- | :--- |
+| **`_getToken()`** | **Persistence Layer** | Mengambil token dari memori HP secara asinkron sebelum melakukan request. Jika token null, request terproteksi tidak akan dijalankan. |
+| **Header Injection** | **Security Protocol** | Setiap request otomatis disisipi: <br>1. `Authorization: Bearer [token]` (Validasi Sesi). <br>2. `Accept: application/json` (Memaksa server mereturn JSON saat error, bukan HTML). |
+| **Status Normalization** | **Robustness** | Menggunakan logika `if (status == 200 || status == 201)`. Ini mengatasi *False Negative* karena standar HTTP mengembalikan **201 Created** saat data baru dibuat, yang sering dianggap gagal jika kode hanya mengecek 200. |
 
-### Tahap 2: Konfigurasi Frontend (Flutter)
-1.  **Dependency**: `flutter pub get` (Mengunduh paket `http` & `shared_preferences`).
-2.  **Verifikasi**: Pastikan `baseUrl` di `api_service.dart` sudah benar.
-3.  **Running**: `flutter run -d chrome`.
+---
+
+### 3. Data Model (`lib/model/book.dart`)
+Berfungsi sebagai **Data Transfer Object (DTO)** untuk integritas data.
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam |
+| :--- | :--- | :--- |
+| **`Book.fromJson`** | **Deserialization** | *Factory Constructor* yang memetakan JSON mentah dari API menjadi Objek Dart yang aman tipe datanya (*Type Safe*). Mencegah runtime error akibat salah akses properti. |
+| **`toJson()`** | **Serialization** | Kebalikan dari `fromJson`. Mengubah Objek Dart menjadi Map (JSON) yang siap dikirim melalui HTTP Body saat operasi Create/Update. |
+
+---
+
+### 4. Halaman Login (`lib/screens/login_page.dart`)
+Gerbang autentikasi utama.
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
+| :--- | :--- | :--- |
+| **`_isLoading`** | **Race Condition Control** | Variabel state mutable. Saat `true`, tombol dikunci menjadi *spinner*. Ini mencegah user melakukan *spamming* (klik berkali-kali) yang bisa membebani server atau membuat data ganda. |
+| **`pushReplacement`** | **Stack Security** | Setelah login sukses, halaman Login **dihancurkan** dari memori (*Stack*). Tombol *Back* di Android tidak akan mengembalikan user ke halaman login, melainkan menutup aplikasi. |
+| **`_login()`** | **Async/Await** | Menggunakan pola `async/await` untuk menahan eksekusi UI sampai server memberikan respons, mencegah aplikasi *freeze* (ANR). |
+
+---
+
+### 5. Halaman Registrasi (`lib/screens/register_page.dart`)
+Pendaftaran user dengan validasi ketat.
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
+| :--- | :--- | :--- |
+| **Client Validation** | **Optimization** | Pengecekan `isEmpty` dilakukan di sisi klien. Ini menghemat *bandwidth* dengan tidak mengirim request sampah ke server. |
+| **`try-catch-finally`** | **Fail-Safe** | Struktur blok kritis. Blok **`finally`** menjamin `_isLoading = false` selalu dieksekusi, mencegah UI macet (*infinite spinner*) jika terjadi error jaringan tak terduga. |
+| **Callback Dialog** | **Event Driven** | `showSuccessDialog` menggunakan parameter *callback*. Navigasi `Navigator.pop` hanya dieksekusi setelah user sadar dan menekan tombol "OK". |
+
+---
+
+### 6. Halaman Utama (`lib/screens/home_page.dart`)
+Dashboard operasional (Read & Delete).
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
+| :--- | :--- | :--- |
+| **`FutureBuilder`** | **Async State Mgmt** | Widget ini secara otomatis mengelola 3 status koneksi: **Waiting** (Spinner), **HasError** (Pesan Error), dan **HasData** (List). Menghilangkan kebutuhan manajemen state manual yang rumit. |
+| **`ListView.builder`** | **Memory Virtualization** | Menggunakan teknik *Lazy Loading*. Hanya merender item buku yang terlihat di layar. Item yang di-scroll keluar akan didaur ulang, sangat efisien RAM. |
+| **`_refreshBooks()`** | **State Rehydration** | Fungsi ini melakukan *re-fetching*. Memanggil `setState` untuk me-reset variabel Future, memaksa `FutureBuilder` mengambil data terbaru dari server (Real-time feel). |
+| **Delete Logic** | **Atomic Operation** | Operasi hapus melibatkan: Konfirmasi Dialog -> API Call -> Success Dialog -> Refresh Data. Urutan ini menjamin keamanan data dan UX yang baik. |
+
+---
+
+### 7. Halaman Form Buku (`lib/screens/form_book_page.dart`)
+Polimorfisme UI (Satu halaman untuk Create & Update).
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam & Alur Eksekusi |
+| :--- | :--- | :--- |
+| **`initState`** | **Lifecycle Hook** | Logika `if (widget.book != null)` dijalankan sekali saat widget dibuat untuk mengisi form dengan data lama (Mode Edit). |
+| **`int.tryParse`** | **Defensive Prog.** | Input `TextField` adalah String, API butuh Integer. `tryParse` + `?? 0` menangani konversi dengan aman, mencegah aplikasi *crash* jika user input huruf. |
+| **Dual Logic** | **Code Reusability** | Logika `if (widget.book == null)` menentukan jalur eksekusi: Panggil API **POST** (Add) atau **PUT** (Update). Mengurangi duplikasi kode hingga 50%. |
+
+---
+
+### 8. Entry Point (`lib/main.dart`)
+Konfigurasi Global.
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam |
+| :--- | :--- | :--- |
+| **`ThemeData`** | **Global Styling** | Mengatur `colorScheme` dengan `seedColor: Colors.brown`. Ini menerapkan tema warna secara konsisten ke seluruh widget (AppBar, Button, dll) tanpa perlu diatur ulang di tiap file. |
+| **Initial Route** | **Navigation Root** | Menetapkan `LoginPage` sebagai halaman awal saat aplikasi di-*boot*. |
+
+---
+
+### 9. Widget Kustom (`lib/widget/success_dialog.dart`)
+Komponen UI Reusable.
+
+| Komponen Kode | Konsep Teknis | Analisis Mendalam |
+| :--- | :--- | :--- |
+| **`VoidCallback`** | **Abstraction** | Widget ini menerima fungsi sebagai parameter (`onOk`). Ini membuatnya fleksibel; halaman pemanggil bisa menentukan sendiri apa yang terjadi setelah dialog ditutup. |
+| **`barrierDismissible`** | **User Guidance** | Disetel `false` agar user wajib menekan tombol "OK", memastikan pesan sukses terbaca. |
+
+---
+
+## 🛠️ Panduan Instalasi & Eksekusi (Step-by-Step)
+
+### A. Konfigurasi Backend (Laravel)
+1.  **Masuk Terminal**: Buka terminal di folder `responsi_backend`.
+2.  **Install Vendor**: `composer install`.
+3.  **Setup Database**:
+    * Buat database baru di MySQL (misal: `responsi_paket3`).
+    * Sesuaikan file `.env` (DB_DATABASE, DB_USERNAME, DB_PASSWORD).
+4.  **Migrasi**: `php artisan migrate` (Pastikan tabel `personal_access_tokens` dibuat).
+5.  **Jalankan Server**: `php artisan serve` (Server jalan di `127.0.0.1:8000`).
+
+### B. Konfigurasi Frontend (Flutter)
+1.  **Masuk Terminal**: Buka terminal baru di folder `responsi_h1d023040`.
+2.  **Install Paket**: `flutter pub get`.
+3.  **Cek Base URL**: Buka `lib/data/api_service.dart`, pastikan `baseUrl = 'http://127.0.0.1:8000/api'`.
+4.  **Jalankan App**: `flutter run -d chrome`.

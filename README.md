@@ -9,8 +9,8 @@ Aplikasi mobile berbasis **Flutter** untuk manajemen inventaris barang (Buku) di
 | :--- | :--- |
 | **Nama** | [ISI NAMA LENGKAP KAMU DISINI] |
 | **NIM** | H1D023040 |
-| **Shift Baru** | [ F] |
-| **Shift Asal** | [ B] |
+| **Shift Baru** | [ISI SHIFT BARU, Contoh: E] |
+| **Shift Asal** | [ISI SHIFT ASAL, Contoh: A] |
 
 ---
 
@@ -43,33 +43,69 @@ Semua endpoint di bawah membutuhkan Header: `Authorization: Bearer <token>`
 
 ---
 
-## 💻 Penjelasan Kode Program (Flutter)
+## 💻 Penjelasan Detail Kode Program (Flutter)
 
-Berikut adalah penjelasan fungsi utama dari setiap file dalam aplikasi ini:
+### 1. Halaman Login (`lib/screens/login_page.dart`)
 
-### 1. Layanan Data (`lib/data/`)
-* **`api_service.dart`**: File ini berfungsi sebagai jembatan antara Flutter dan Laravel. Berisi semua fungsi HTTP request (Login, Register, CRUD) dan manajemen token.
+Halaman ini merupakan *entry point* aplikasi dan bertanggung jawab penuh atas proses autentikasi.
 
-### 2. Model Data (`lib/model/`)
-* **`book.dart`**: Representasi objek Buku (data fields Judul, Harga, Jumlah, dll.) yang digunakan untuk konversi data antara JSON dari API dan objek Dart (<code>fromJson</code> dan <code>toJson</code>).
+| Blok Kode | Kategori | Penjelasan Detail |
+| :--- | :--- | :--- |
+| **Variabel State** | Pengelolaan Data | Menggunakan `_emailController`, `_passwordController`, dan `_isLoading` untuk mengelola input user dan status *loading* tombol. |
+| **`bool _isLoading`** | UI Kontrol | Status yang mengontrol tampilan tombol utama; `true` menampilkan `CircularProgressIndicator`, `false` menampilkan teks "Masuk". |
+| **`_login()` Function** | Logika Bisnis | Fungsi utama yang dipicu saat tombol "Masuk" ditekan. Mengirim kredensial via `ApiService` dan menunggu respons. |
+| **Success Logic** | Navigasi | Jika `_apiService.login` mengembalikan `true`, token berhasil disimpan ke `shared_preferences`, dan user diarahkan ke `HomePage` menggunakan `Navigator.pushReplacement`. |
+| **Failed Logic** | Error Handling | Jika login gagal, status *loading* dihentikan dan `SnackBar` ditampilkan dengan pesan error. |
+| **`AppBar` Title** | Branding | Disetel ke **'Login Primamart'** dan diwarnai **coklat** (`Colors.brown`) sesuai ketentuan proyek. |
+| **`TextButton`** | Navigasi | Tombol "Daftar disini" yang mengarahkan user ke halaman `RegisterPage`. |
 
-### 3. Tampilan Layar (`lib/screens/`)
-* **`login_page.dart`**: Halaman awal aplikasi dengan form login.
-Kode,Penjelasan Fungsi
-class LoginPage extends StatefulWidget,Merupakan widget yang memerlukan perubahan status (seperti loading dan input teks) sehingga menggunakan StatefulWidget.
-final _emailController = ...,TextEditingController untuk mengambil nilai yang diketik pengguna pada kolom Email.
-final _passwordController = ...,TextEditingController untuk mengambil nilai yang diketik pengguna pada kolom Password.
-final ApiService _apiService = ApiService();,Membuat instance dari kelas <code>ApiService</code> untuk melakukan komunikasi HTTP (panggilan API).
-bool _isLoading = false;,Variabel state yang mengontrol apakah tombol login harus menampilkan indikator loading (true) atau teks tombol (false).
-* **`register_page.dart`**: Form pendaftaran user baru. Menggunakan <code>try-catch-finally</code> dan menampilkan Popup Dialog sukses setelah registrasi.
-* **`home_page.dart`**: Halaman utama ("Inventaris Buku Primamart"). Menampilkan daftar buku, tombol logout, dan fungsi untuk hapus/edit.
-* **`form_book_page.dart`**: Form serbaguna untuk Tambah atau Edit buku.
+### 2. Halaman Daftar (`lib/screens/register_page.dart`)
 
-### 4. Widget Tambahan (`lib/widget/`)
-* **`success_dialog.dart`**: Widget kustom untuk menampilkan Popup Dialog saat aksi berhasil.
+Halaman pendaftaran akun baru dengan fitur *self-recovery* dari error.
+
+| Blok Kode | Kategori | Penjelasan Detail |
+| :--- | :--- | :--- |
+| **Error Handling** | Robustness | Menggunakan blok **`try-catch-finally`** di fungsi `_register()` untuk menangani error jaringan atau server secara aman, serta memastikan *loading* berhenti (anti-spinner stuck). |
+| **Validasi** | Input Safety | Mencegah user mendaftar jika kolom Nama, Email, atau Password kosong. |
+| **Success Dialog** | Feedback | Setelah sukses, menampilkan <code>showSuccessDialog</code> (popup) dan kembali ke halaman Login. |
+| **AppBar Title** | Branding | Disetel ke **'Daftar Akun Primamart'** untuk konsistensi. |
+
+### 3. Halaman Utama (`lib/screens/home_page.dart`)
+
+Dashboard utama yang menampilkan inventaris buku (fitur Read dan Delete).
+
+| Blok Kode | Kategori | Penjelasan Detail |
+| :--- | :--- | :--- |
+| **`FutureBuilder`** | Data Fetching | Digunakan untuk mengambil daftar buku secara asinkron dari API melalui `_apiService.getBooks()`. |
+| **`_refreshBooks()`** | State Management | Fungsi yang dipanggil di `initState()` dan setelah aksi CRUD (tambah/edit/hapus) untuk memperbarui tampilan daftar buku. |
+| **Tombol Edit** | CRUD | Mengarahkan ke `FormBookPage` dengan membawa data buku (`book: book`) agar form terisi otomatis untuk pengeditan. |
+| **Tombol Hapus** | CRUD Safety | Menampilkan <b>Alert Dialog Konfirmasi</b> sebelum memanggil `_apiService.deleteBook(book.id!)`. Jika sukses, menampilkan `showSuccessDialog` dan me-refresh daftar. |
+| **`FloatingActionButton`** | Navigasi | Tombol <code>+</code> yang mengarahkan ke `FormBookPage` untuk menambah buku baru. |
+
+### 4. Halaman Form Buku (`lib/screens/form_book_page.dart`)
+
+Digunakan untuk logika penambahan dan pengubahan data inventaris.
+
+| Blok Kode | Kategori | Penjelasan Detail |
+| :--- | :--- | :--- |
+| **Dynamic Title** | UI/Navigasi | Judul AppBar berubah antara "Tambah Buku Primamart" atau "Edit Buku Primamart" berdasarkan parameter `widget.book` (null atau ada data). |
+| **`_submit()` Function** | Logic | Menangani konversi input string ke `int` (untuk Harga, Jumlah, Volume) dan memanggil `addBook` atau `updateBook` melalui `ApiService`. |
+| **Try-Catch** | Robustness | Melindungi proses pengiriman data agar *loading* selalu berhenti, bahkan jika konversi tipe data atau koneksi API gagal. |
+| **`_isLoading`** | UI Kontrol | Mengontrol tampilan tombol "Simpan"/"Update" menjadi `CircularProgressIndicator` saat data sedang diproses. |
+
+---
+
+### 5. File Pendukung Utama
+
+| File | Keterangan |
+| :--- | :--- |
+| **`main.dart`** | Entry point yang mengatur tema aplikasi ke **Coklat** dan menjalankan `LoginPage` sebagai halaman awal. |
+| **`api_service.dart`** | Kelas penghubung HTTP utama. Diperbarui untuk menerima status code `200` atau `201` pada operasi `POST` dan mengirimkan header `Accept: application/json`. |
+| **`success_dialog.dart`** | Widget kustom yang menyediakan *popup dialog* seragam untuk umpan balik keberhasilan (success feedback) di seluruh aplikasi. |
 
 ---
 
 ## 🛠️ Cara Instalasi & Menjalankan
-1.  **Backend (Laravel)**: Jalankan migrasi dan server: `php artisan migrate` dan `php artisan serve`.
+
+1.  **Backend (Laravel)**: Pastikan semua migrasi sudah dijalankan (`php artisan migrate`) dan server nyala: `php artisan serve`.
 2.  **Frontend (Flutter)**: Jalankan aplikasi di Chrome: `flutter run -d chrome`.

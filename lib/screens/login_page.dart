@@ -28,7 +28,6 @@ class _LoginPageState extends State<LoginPage> {
 
     if (success) {
       if (!mounted) return;
-      // Login sukses pindah ke Home
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -45,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // PERUBAHAN: Judul Login Primamart
         title: const Text('Login Primamart'), 
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,

@@ -4,7 +4,7 @@ import '../model/book.dart';
 import '../widget/success_dialog.dart';
 
 class FormBookPage extends StatefulWidget {
-  final Book? book; // Jika null = Tambah, Jika ada = Edit
+  final Book? book;
   const FormBookPage({super.key, this.book});
 
   @override
@@ -91,7 +91,6 @@ class _FormBookPageState extends State<FormBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // SUDAH DIPERBARUI
         title: Text(widget.book == null ? "Tambah Buku Primamart" : "Edit Buku Primamart"),
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,

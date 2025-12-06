@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/api_service.dart';
-import '../widget/success_dialog.dart'; // Pastikan import ini ada
+import '../widget/success_dialog.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,7 +17,6 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _isLoading = false;
 
   void _register() async {
-    // 1. Validasi Input
     if (_nameController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _passwordController.text.isEmpty) {
@@ -27,37 +26,31 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    // 2. Mulai Loading
     setState(() => _isLoading = true);
 
     try {
-      // 3. Panggil API Register
       bool success = await _apiService.register(
         _nameController.text,
         _emailController.text,
         _passwordController.text,
       );
 
-      // 4. Cek Hasil
       if (success) {
         if (!mounted) return;
         
-        // Tampilkan Popup Sukses
         showSuccessDialog(context, "Registrasi Berhasil! Silakan Login.", () {
-          Navigator.pop(context); // Kembali ke Login setelah klik OK
+          Navigator.pop(context);
         });
         
       } else {
         throw Exception('Gagal register. Email mungkin sudah digunakan.');
       }
     } catch (e) {
-      // 5. Tangkap Error (Koneksi/CORS/Lainnya)
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Terjadi kesalahan: $e')),
       );
     } finally {
-      // 6. WAJIB: Matikan Loading apa pun yang terjadi
       if (mounted) {
         setState(() => _isLoading = false);
       }
@@ -68,7 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // SUDAH DIPERBARUI: Menambahkan nama Primamart
         title: const Text('Daftar Akun Primamart'), 
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,

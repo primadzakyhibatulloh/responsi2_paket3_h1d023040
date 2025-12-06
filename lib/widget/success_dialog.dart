@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-// Fungsi ini bisa dipanggil dari halaman mana saja
 void showSuccessDialog(BuildContext context, String message, VoidCallback onOk) {
   showDialog(
     context: context,
-    barrierDismissible: false, // User wajib klik OK, gak bisa klik luar
+    barrierDismissible: false,
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Row(
@@ -22,8 +21,8 @@ void showSuccessDialog(BuildContext context, String message, VoidCallback onOk) 
               foregroundColor: Colors.white,
             ),
             onPressed: () {
-              Navigator.of(context).pop(); // Tutup dialog dulu
-              onOk(); // Jalankan aksi selanjutnya (misal: pindah halaman)
+              Navigator.of(context).pop();
+              onOk();
             },
             child: const Text("OK"),
           ),

@@ -19,12 +19,11 @@ class Book {
     required this.penerbit,
   });
 
-  // Mengubah JSON dari API menjadi Object Dart
   factory Book.fromJson(Map<String, dynamic> json) {
     return Book(
       id: json['id'],
       judul: json['judul'],
-      harga: json['harga'], // Pastikan tipe data di database Integer
+      harga: json['harga'],
       jumlah: json['jumlah'],
       tanggalMasuk: json['tanggal_masuk'],
       volume: json['volume'],
@@ -33,7 +32,6 @@ class Book {
     );
   }
 
-  // Mengubah Object Dart menjadi JSON untuk dikirim ke API
   Map<String, dynamic> toJson() {
     return {
       'judul': judul,

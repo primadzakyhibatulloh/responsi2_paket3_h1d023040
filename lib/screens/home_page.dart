@@ -3,7 +3,7 @@ import '../data/api_service.dart';
 import '../model/book.dart';
 import 'form_book_page.dart';
 import 'login_page.dart';
-import '../widget/success_dialog.dart'; // Pastikan import ini ada
+import '../widget/success_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,15 +32,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // PERUBAHAN: Nama Toko jadi Primamart
         title: const Text('Inventaris Buku Primamart'), 
-        backgroundColor: Colors.brown, // Wajib Coklat
+        backgroundColor: Colors.brown, 
         foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
-              // Logout Logic
               await _apiService.logout();
               if (!mounted) return;
               Navigator.pushReplacement(
@@ -73,7 +71,6 @@ class _HomePageState extends State<HomePage> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Tombol Edit
                       IconButton(
                         icon: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () async {
@@ -83,14 +80,12 @@ class _HomePageState extends State<HomePage> {
                               builder: (_) => FormBookPage(book: book),
                             ),
                           );
-                          _refreshBooks(); // Refresh setelah edit
+                          _refreshBooks();
                         },
                       ),
-                      // Tombol Hapus dengan Konfirmasi
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () async {
-                          // Dialog Konfirmasi
                           bool confirm = await showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
@@ -114,7 +109,6 @@ class _HomePageState extends State<HomePage> {
                             
                             if (success) {
                               if (!mounted) return;
-                              // Popup Sukses
                               showSuccessDialog(context, "Buku berhasil dihapus.", () {
                                 _refreshBooks(); 
                               });
@@ -143,7 +137,7 @@ class _HomePageState extends State<HomePage> {
             context,
             MaterialPageRoute(builder: (_) => const FormBookPage()),
           );
-          _refreshBooks(); // Refresh setelah tambah buku
+          _refreshBooks();
         },
       ),
     );

@@ -9,8 +9,8 @@ Aplikasi mobile berbasis **Flutter** untuk manajemen inventaris barang (Buku) di
 | :--- | :--- |
 | **Nama** | [ISI NAMA LENGKAP KAMU DISINI] |
 | **NIM** | H1D023040 |
-| **Shift Baru** | [ISI SHIFT BARU, Contoh: E] |
-| **Shift Asal** | [ISI SHIFT ASAL, Contoh: A] |
+| **Shift Baru** | [ F] |
+| **Shift Asal** | [ B] |
 
 ---
 

@@ -24,6 +24,7 @@ Berikut adalah dokumentasi video yang menunjukkan alur registrasi, login, dan op
 
 
 ## 🔌 Spesifikasi API (Laravel Backend)
+repo link = https://github.com/primadzakyhibatulloh/api_primamart
 Backend menggunakan Laravel Sanctum. Semua request ke endpoint inventaris **wajib** menyertakan Header: `Authorization: Bearer <your_access_token>`
 
 ### 1. Autentikasi

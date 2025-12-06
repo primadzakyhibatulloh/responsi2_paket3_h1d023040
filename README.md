@@ -1,168 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>README - Responsi 2 Mobile Paket 3</title>
-    <meta charset="UTF-8">
-</head>
-<body>
+# Responsi 2 Mobile Paket 3 - Inventaris Primamart
 
-    <h1>Responsi 2 Mobile Paket 3 - Inventaris Primamart</h1>
-    <p>Aplikasi mobile berbasis <b>Flutter</b> untuk manajemen inventaris barang (Buku) di supermarket "Primamart". Aplikasi ini menggunakan <b>Laravel</b> sebagai Backend API.</p>
+Aplikasi mobile berbasis **Flutter** untuk manajemen inventaris barang (Buku) di supermarket "Primamart". Aplikasi ini menggunakan **Laravel** sebagai Backend API.
 
-    <hr>
+---
 
-    <h2>👤 Identitas Mahasiswa</h2>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Atribut</th>
-                <th>Keterangan</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><b>Nama</b></td>
-                <td>[ISI NAMA LENGKAP KAMU DISINI]</td>
-            </tr>
-            <tr>
-                <td><b>NIM</b></td>
-                <td>H1D023040</td>
-            </tr>
-            <tr>
-                <td><b>Shift Baru</b></td>
-                <td>[ISI SHIFT BARU, Contoh: E]</td>
-            </tr>
-            <tr>
-                <td><b>Shift Asal</b></td>
-                <td>[ISI SHIFT ASAL, Contoh: A]</td>
-            </tr>
-        </tbody>
-    </table>
+## 👤 Identitas Mahasiswa
+| Atribut | Keterangan |
+| :--- | :--- |
+| **Nama** | [ISI NAMA LENGKAP KAMU DISINI] |
+| **NIM** | H1D023040 |
+| **Shift Baru** | [ISI SHIFT BARU, Contoh: E] |
+| **Shift Asal** | [ISI SHIFT ASAL, Contoh: A] |
 
-    <hr>
+---
 
-    <h2>🎥 Video Demo Aplikasi</h2>
-    <p>Berikut adalah link video demonstrasi penggunaan aplikasi:</p>
-    <p><b><a href="[LINK VIDEO DEMO DISINI]" target="_blank">[KLIK DISINI UNTUK MELIHAT VIDEO DEMO]</a></b></p>
-    <p><i>(Catatan: Upload video ke YouTube atau Google Drive, lalu tempel link-nya di atas)</i></p>
+## 🎥 Video Demo Aplikasi
+Berikut adalah link video demonstrasi penggunaan aplikasi:
+**[KLIK DISINI UNTUK MELIHAT VIDEO DEMO]**
+*(Catatan: Upload video ke YouTube atau Google Drive, lalu tempel link-nya di atas)*
 
-    <hr>
+---
 
-    <h2>🔌 Spesifikasi API (Laravel)</h2>
-    <p>Backend dibangun menggunakan framework Laravel dengan fitur Token-based Authentication (Sanctum).</p>
+## 🔌 Spesifikasi API (Laravel)
+Backend dibangun menggunakan framework Laravel dengan fitur Token-based Authentication (Sanctum).
 
-    <h3>1. Authentication</h3>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Method</th>
-                <th>Endpoint</th>
-                <th>Deskripsi</th>
-                <th>Parameter Body (JSON)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><code>POST</code></td>
-                <td><code>/api/register</code></td>
-                <td>Mendaftarkan akun baru</td>
-                <td><code>name</code>, <code>email</code>, <code>password</code></td>
-            </tr>
-            <tr>
-                <td><code>POST</code></td>
-                <td><code>/api/login</code></td>
-                <td>Masuk & mendapatkan Token</td>
-                <td><code>email</code>, <code>password</code></td>
-            </tr>
-            <tr>
-                <td><code>POST</code></td>
-                <td><code>/api/logout</code></td>
-                <td>Hapus token (Keluar)</td>
-                <td><i>(Header Authorization: Bearer Token)</i></td>
-            </tr>
-        </tbody>
-    </table>
+### 1. Authentication
+| Method | Endpoint | Deskripsi | Parameter Body (JSON) |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/register` | Mendaftarkan akun baru | `name`, `email`, `password` |
+| `POST` | `/api/login` | Masuk & mendapatkan Token | `email`, `password` |
+| `POST` | `/api/logout` | Hapus token (Keluar) | _(Header Authorization: Bearer Token)_ |
 
-    <h3>2. Inventaris Buku (CRUD)</h3>
-    <p>Semua endpoint di bawah membutuhkan Header: <code>Authorization: Bearer &lt;token&gt;</code></p>
-    <table border="1" cellpadding="5" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Method</th>
-                <th>Endpoint</th>
-                <th>Deskripsi</th>
-                <th>Parameter Body (JSON)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><code>GET</code></td>
-                <td><code>/api/books</code></td>
-                <td>Mengambil semua data buku</td>
-                <td>-</td>
-            </tr>
-            <tr>
-                <td><code>POST</code></td>
-                <td><code>/api/books</code></td>
-                <td>Menambah buku baru</td>
-                <td><code>judul</code>, <code>harga</code>, <code>jumlah</code>, <code>tanggal_masuk</code>, <code>volume</code>, <code>penulis</code>, <code>penerbit</code></td>
-            </tr>
-            <tr>
-                <td><code>PUT</code></td>
-                <td><code>/api/books/{id}</code></td>
-                <td>Mengupdate data buku</td>
-                <td><code>judul</code>, <code>harga</code>, <code>jumlah</code>, <code>tanggal_masuk</code>, <code>volume</code>, <code>penulis</code>, <code>penerbit</code></td>
-            </tr>
-            <tr>
-                <td><code>DELETE</code></td>
-                <td><code>/api/books/{id}</code></td>
-                <td>Menghapus buku</td>
-                <td>-</td>
-            </tr>
-        </tbody>
-    </table>
+### 2. Inventaris Buku (CRUD)
+Semua endpoint di bawah membutuhkan Header: `Authorization: Bearer <token>`
 
-    <hr>
+| Method | Endpoint | Deskripsi | Parameter Body (JSON) |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/books` | Mengambil semua data buku | - |
+| `POST` | `/api/books` | Menambah buku baru | `judul`, `harga`, `jumlah`, `tanggal_masuk`, `volume`, `penulis`, `penerbit` |
+| `PUT` | `/api/books/{id}` | Mengupdate data buku | `judul`, `harga`, `jumlah`, `tanggal_masuk`, `volume`, `penulis`, `penerbit` |
+| `DELETE` | `/api/books/{id}` | Menghapus buku | - |
 
-    <h2>💻 Penjelasan Kode Program (Flutter)</h2>
+---
 
-    <h3>1. Layanan Data (Folder <code>lib/data/</code>)</h3>
-    <ul>
-        <li><b><code>api_service.dart</code></b>: 
-            File ini berfungsi sebagai jembatan antara Flutter dan Laravel. Berisi semua fungsi HTTP request (Login, Register, CRUD).</li>
-    </ul>
+## 💻 Penjelasan Kode Program (Flutter)
 
-    <h3>2. Model Data (Folder <code>lib/model/</code>)</h3>
-    <ul>
-        <li><b><code>book.dart</code></b>: 
-            Merupakan representasi objek Buku. Digunakan untuk konversi data antara JSON dari API dan objek Dart di aplikasi (<code>fromJson</code> dan <code>toJson</code>).</li>
-    </ul>
+Berikut adalah penjelasan fungsi utama dari setiap file dalam aplikasi ini:
 
-    <h3>3. Tampilan Layar (Folder <code>lib/screens/</code>)</h3>
-    <ul>
-        <li><b><code>login_page.dart</code></b>: Halaman awal aplikasi. Memiliki form login dan link navigasi ke Register.</li>
-        <li><b><code>register_page.dart</code></b>: Form pendaftaran user baru. Menggunakan <code>try-catch-finally</code> dan menampilkan <b>Popup Dialog</b> sukses setelah registrasi.</li>
-        <li><b><code>home_page.dart</code></b>: Halaman utama aplikasi ("Inventaris Buku Primamart"). Menampilkan daftar buku, tombol logout, serta fungsi untuk refresh data dan memicu hapus/edit.</li>
-        <li><b><code>form_book_page.dart</code></b>: Form serbaguna untuk Tambah atau Edit buku. Memiliki validasi dan loading indicator.</li>
-    </ul>
+### 1. Layanan Data (`lib/data/`)
+* **`api_service.dart`**: File ini berfungsi sebagai jembatan antara Flutter dan Laravel. Berisi semua fungsi HTTP request (Login, Register, CRUD) dan manajemen token.
 
-    <h3>4. Widget Tambahan (Folder <code>lib/widget/</code>)</h3>
-    <ul>
-        <li><b><code>success_dialog.dart</code></b>: Reusable widget untuk menampilkan <b>Popup Dialog</b> dengan ikon centang saat aksi berhasil (sukses CRUD dan Register).</li>
-    </ul>
+### 2. Model Data (`lib/model/`)
+* **`book.dart`**: Representasi objek Buku (data fields Judul, Harga, Jumlah, dll.) yang digunakan untuk konversi data antara JSON dari API dan objek Dart (<code>fromJson</code> dan <code>toJson</code>).
 
-    <h3>5. Entry Point</h3>
-    <ul>
-        <li><b><code>main.dart</code></b>: Mengatur tema aplikasi dengan warna utama <b>Coklat</b>. Menetapkan judul aplikasi ("Responsi 2 Mobile Paket 3 H1D023040") dan menjalankan <code>LoginPage</code> sebagai halaman awal.</li>
-    </ul>
+### 3. Tampilan Layar (`lib/screens/`)
+* **`login_page.dart`**: Halaman awal aplikasi dengan form login.
+* **`register_page.dart`**: Form pendaftaran user baru. Menggunakan <code>try-catch-finally</code> dan menampilkan Popup Dialog sukses setelah registrasi.
+* **`home_page.dart`**: Halaman utama ("Inventaris Buku Primamart"). Menampilkan daftar buku, tombol logout, dan fungsi untuk hapus/edit.
+* **`form_book_page.dart`**: Form serbaguna untuk Tambah atau Edit buku.
 
-    <hr>
+### 4. Widget Tambahan (`lib/widget/`)
+* **`success_dialog.dart`**: Widget kustom untuk menampilkan Popup Dialog saat aksi berhasil.
 
-    <h2>🛠️ Cara Instalasi & Menjalankan</h2>
-    <ol>
-        <li><b>Backend (Laravel)</b>: Jalankan migrasi dan server: <code>php artisan migrate</code> dan <code>php artisan serve</code>.</li>
-        <li><b>Frontend (Flutter)</b>: Jalankan aplikasi di Chrome: <code>flutter run -d chrome</code>.</li>
-    </ol>
+---
 
-</body>
-</html>
+## 🛠️ Cara Instalasi & Menjalankan
+1.  **Backend (Laravel)**: Jalankan migrasi dan server: `php artisan migrate` dan `php artisan serve`.
+2.  **Frontend (Flutter)**: Jalankan aplikasi di Chrome: `flutter run -d chrome`.
